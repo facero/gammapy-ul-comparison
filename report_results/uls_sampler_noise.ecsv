@@ -1,0 +1,330 @@
+# %ECSV 1.0
+# ---
+# datatype:
+# - {name: exposure, datatype: string}
+# - {name: livetime, unit: h, datatype: float64}
+# - {name: bkg_counts, datatype: float64}
+# - {name: simu_amplitude, unit: 1 / (TeV s cm2), datatype: float64}
+# - {name: dataset_type, datatype: string}
+# - {name: seed, datatype: int64}
+# - {name: case, datatype: string}
+# - {name: method, datatype: string}
+# - {name: prior, datatype: string}
+# - {name: ul_method, datatype: string}
+# - {name: ul, unit: 1 / (TeV s cm2), datatype: float64}
+# - {name: sensitivity, unit: 1 / (TeV s cm2), datatype: float64}
+# - {name: best_fit, unit: 1 / (TeV s cm2), datatype: float64}
+# - {name: ts, datatype: float64}
+# - {name: success, datatype: bool}
+# - {name: message, datatype: string}
+# meta: !!omap
+# - {E1: 0.05 TeV}
+# - {E2: 50.0 TeV}
+# - fpe_config: {n_sigma_sensitivity: 2, n_sigma_ul: 1.645}
+# - {delta_ts: 2.706025}
+# - {n_runs: 30}
+# - {seed: explicit}
+# - exposures: [0.3 h, 100 h]
+# - bkg_counts: {0.3 h: 100.44623073669555, 100 h: 33482.076912231816}
+# - simu_amplitude: {0.3 h: 1.0e-20, 100 h: 1.0e-20}
+# - dataset_types: ['on']
+# - cases:
+#   - amplitude_max: 1.0e-11
+#     amplitude_min: 0.0
+#     confidence_level_samples: 0.954
+#     method: sampler
+#     name: sampler-zero
+#     norm_interp: log
+#     norm_min: 0.0
+#     norm_scan_extend_factor: 3.0
+#     norm_scan_max: 10.0
+#     norm_scan_max_extensions: 3
+#     norm_scan_min: 1.0e-06
+#     norm_scan_n_values: 50
+#     prior: zero
+#     profile_ul_methods: [scipy]
+#     sampler_backend: ultranest
+#     sampler_options: {log_dir: null, min_num_live_points: 300, show_status: false, viz_callback: false}
+#     sampler_ul_methods: [samples, grid]
+#   - amplitude_max: 1.0e-11
+#     amplitude_min: -3.0e-14
+#     confidence_level_samples: 0.954
+#     method: sampler
+#     name: sampler-negative
+#     norm_interp: lin
+#     norm_min: -0.1
+#     norm_scan_extend_factor: 3.0
+#     norm_scan_max: 5.0
+#     norm_scan_max_extensions: 3
+#     norm_scan_min: -0.1
+#     norm_scan_n_values: 100
+#     prior: negative
+#     profile_ul_methods: [scipy]
+#     sampler_backend: ultranest
+#     sampler_options: {log_dir: null, min_num_live_points: 300, show_status: false, viz_callback: false}
+#     sampler_ul_methods: [samples, grid]
+# - {gammapy_version: 2.0.dev3770+g3c52c99d8}
+# - {date: '2026-10-23T08:58:21'}
+# - __serialized_columns__:
+#     best_fit:
+#       __class__: astropy.units.quantity.Quantity
+#       unit: &id001 !astropy.units.Unit {unit: 1 / (TeV s cm2)}
+#       value: !astropy.table.SerializedColumn {name: best_fit}
+#     livetime:
+#       __class__: astropy.units.quantity.Quantity
+#       unit: !astropy.units.Unit {unit: h}
+#       value: !astropy.table.SerializedColumn {name: livetime}
+#     sensitivity:
+#       __class__: astropy.units.quantity.Quantity
+#       unit: *id001
+#       value: !astropy.table.SerializedColumn {name: sensitivity}
+#     simu_amplitude:
+#       __class__: astropy.units.quantity.Quantity
+#       unit: *id001
+#       value: !astropy.table.SerializedColumn {name: simu_amplitude}
+#     ul:
+#       __class__: astropy.units.quantity.Quantity
+#       unit: *id001
+#       value: !astropy.table.SerializedColumn {name: ul}
+# schema: astropy-2.0
+exposure livetime bkg_counts simu_amplitude dataset_type seed case method prior ul_method ul sensitivity best_fit ts success message
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231266e-13 nan 2.6453450978463628e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231239e-13 nan 2.84624016427112e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231266e-13 nan 3.215694472970763e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231239e-13 nan 2.9721154855263044e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231266e-13 nan 3.298946209594297e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231239e-13 nan 3.2328451286237644e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.838283240923125e-13 nan 3.4352702329238753e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231239e-13 nan 3.156829386837215e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231239e-13 nan 2.7183642387014647e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231239e-13 nan 2.9904124588174684e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231239e-13 nan 2.466345372005961e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.838283240923125e-13 nan 2.61952006259701e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231239e-13 nan 2.869423269477013e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231266e-13 nan 2.794064547794232e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231274e-13 nan 2.855639502560831e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231239e-13 nan 2.339916571886777e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231239e-13 nan 2.870984209459215e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231239e-13 nan 2.6646371581416522e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231239e-13 nan 3.245564310410823e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231266e-13 nan 3.301416759691838e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231266e-13 nan 2.6576023929794675e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231239e-13 nan 1.9873311977418407e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231266e-13 nan 2.8341829760806242e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231239e-13 nan 2.3698237708635213e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231266e-13 nan 2.5438599716930633e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231266e-13 nan 2.2682721413148216e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.838283240923125e-13 nan 2.6401205862266234e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231266e-13 nan 2.459750643539611e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231266e-13 nan 2.5811628366720943e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative grid 1.8382832409231266e-13 nan 3.335583296882997e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.813251177124229e-13 nan 2.6453450978463628e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.7563752948845417e-13 nan 2.84624016427112e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.8889222245686896e-13 nan 3.215694472970763e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.955561540819339e-13 nan 2.9721154855263044e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.785983448074007e-13 nan 3.298946209594297e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.8265379498061615e-13 nan 3.2328451286237644e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.8246309897235288e-13 nan 3.4352702329238753e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.8620691125014679e-13 nan 3.156829386837215e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.957921247607672e-13 nan 2.7183642387014647e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.9438581902105713e-13 nan 2.9904124588174684e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.79306051097761e-13 nan 2.466345372005961e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.7984573839154613e-13 nan 2.61952006259701e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.8484615224221647e-13 nan 2.869423269477013e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.8201320104308248e-13 nan 2.794064547794232e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.8994410965079778e-13 nan 2.855639502560831e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.7704855398246831e-13 nan 2.339916571886777e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.699369891163275e-13 nan 2.870984209459215e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.8387004829858862e-13 nan 2.6646371581416522e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.850511264629091e-13 nan 3.245564310410823e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.9461347045864907e-13 nan 3.301416759691838e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.859717895993391e-13 nan 2.6576023929794675e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.8290508584046927e-13 nan 1.9873311977418407e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.8327174515810642e-13 nan 2.8341829760806242e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.811952035032805e-13 nan 2.3698237708635213e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.795733639265504e-13 nan 2.5438599716930633e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.7826227603626184e-13 nan 2.2682721413148216e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.8822454886342832e-13 nan 2.6401205862266234e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.7829298031746722e-13 nan 2.459750643539611e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.7823511135221403e-13 nan 2.5811628366720943e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-negative sampler negative samples 1.8523598435030588e-13 nan 3.335583296882997e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 5.175659677833434e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.04165645109267e-13 nan 4.826296113461053e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 5.6205002560710207e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926713e-13 nan 5.308501707663231e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 5.6229505993279724e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.04165645109267e-13 nan 5.106534850579063e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926713e-13 nan 5.991143053238866e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 4.943860879103579e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 4.967317418040593e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926713e-13 nan 5.4240486163874726e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 4.866759215332118e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 5.4526025215422854e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 5.0572298872532115e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 5.715139770768749e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 5.277076510455672e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 5.693848243895162e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926713e-13 nan 5.331695933303626e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 4.9821937845430033e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 5.399607916540771e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 4.9589889714613766e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 6.008466313861539e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 5.250875335810593e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926738e-13 nan 5.1900624384751766e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 5.5686960535995914e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926695e-13 nan 5.438174823240155e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.04165645109267e-13 nan 5.0733845240489445e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.04165645109267e-13 nan 5.147239141725858e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926723e-13 nan 4.9378532000452995e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.04165645109267e-13 nan 5.1606202207871566e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero grid 2.0416564510926683e-13 nan 5.4947583712590704e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.0546199783782456e-13 nan 5.175659677833434e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 1.975405038968897e-13 nan 4.826296113461053e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.0788007913043247e-13 nan 5.6205002560710207e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.0532714593413427e-13 nan 5.308501707663231e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.1773995439546817e-13 nan 5.6229505993279724e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.0293417580522214e-13 nan 5.106534850579063e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.110531019121642e-13 nan 5.991143053238866e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.0908008601851074e-13 nan 4.943860879103579e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.0313928663656384e-13 nan 4.967317418040593e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.0688997477851396e-13 nan 5.4240486163874726e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.0512504072883194e-13 nan 4.866759215332118e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.0583534347659805e-13 nan 5.4526025215422854e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.1053858762700226e-13 nan 5.0572298872532115e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.1334770952766792e-13 nan 5.715139770768749e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 1.89575505479963e-13 nan 5.277076510455672e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.0446200472082625e-13 nan 5.693848243895162e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.00712249323449e-13 nan 5.331695933303626e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.0360173527077643e-13 nan 4.9821937845430033e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.0699346136604886e-13 nan 5.399607916540771e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.0615691402348626e-13 nan 4.9589889714613766e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.0615855318384738e-13 nan 6.008466313861539e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 1.981906866382576e-13 nan 5.250875335810593e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 1.9753233525192477e-13 nan 5.1900624384751766e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 1.9586947220832864e-13 nan 5.5686960535995914e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.0187901417348499e-13 nan 5.438174823240155e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 1.9754327736270652e-13 nan 5.0733845240489445e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.1349306736899873e-13 nan 5.147239141725858e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.0953703947848316e-13 nan 4.9378532000452995e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 2.0355233386437948e-13 nan 5.1606202207871566e-14 nan True ""
+"0.3 h" 0.3 100.44623073669555 1e-20 on 0 sampler-zero sampler zero samples 1.9485665344520223e-13 nan 5.4947583712590704e-14 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.6504362240776055e-15 nan -2.7538608493416798e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.854931974075879e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.6504362240776055e-15 nan -2.555594794185592e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.5560762263046302e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.6504362240776055e-15 nan -2.733568159571932e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.6504362240776055e-15 nan -2.7381631318638453e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.6504362240776055e-15 nan -2.6795899898547177e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.6504362240776055e-15 nan -2.8029698262593146e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.5701998290296923e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.6473663556903023e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.3956004261868038e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.5259858423472744e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.6504362240776055e-15 nan -2.333084483784495e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.7547764779082967e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.6504362240776055e-15 nan -2.495475725265892e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.5668482481611777e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.6743942164181933e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.789870089193222e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.6829719670146324e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.45258268178607e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.7001559813359147e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.543957256299468e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.4687488063824077e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.2865395665162407e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.6504362240776055e-15 nan -2.535663682293057e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.5660337440357317e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.4790218580629034e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.650436224077415e-15 nan -2.8483220042105113e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.6504362240776055e-15 nan -2.7423140287784846e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative grid 2.6504362240776055e-15 nan -2.6905008503079513e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.711747996822581e-15 nan -2.7538608493416798e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.4446423186786795e-15 nan -2.854931974075879e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.553582796437647e-15 nan -2.555594794185592e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.725671563523136e-15 nan -2.5560762263046302e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.8259531104665106e-15 nan -2.733568159571932e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.5094169387946973e-15 nan -2.7381631318638453e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.9358509999484483e-15 nan -2.6795899898547177e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.5997495040755092e-15 nan -2.8029698262593146e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.542156066293104e-15 nan -2.5701998290296923e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.575924943841461e-15 nan -2.6473663556903023e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.5831716789091097e-15 nan -2.3956004261868038e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.714084994640389e-15 nan -2.5259858423472744e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.6802296564386873e-15 nan -2.333084483784495e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.593173624590897e-15 nan -2.7547764779082967e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.864229376421707e-15 nan -2.495475725265892e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.777499152514976e-15 nan -2.5668482481611777e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.585774488234528e-15 nan -2.6743942164181933e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.5601244288958616e-15 nan -2.789870089193222e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.3203504115369052e-15 nan -2.6829719670146324e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.3213317873513252e-15 nan -2.45258268178607e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.5399285866795753e-15 nan -2.7001559813359147e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.8134390175756336e-15 nan -2.543957256299468e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.9892813231201706e-15 nan -2.4687488063824077e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 3.014053346149028e-15 nan -2.2865395665162407e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.8864169718731414e-15 nan -2.535663682293057e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.3730162669487128e-15 nan -2.5660337440357317e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.528456181496791e-15 nan -2.4790218580629034e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.5599035461209826e-15 nan -2.8483220042105113e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.4349157479673915e-15 nan -2.7423140287784846e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-negative sampler negative samples 2.3343281466976387e-15 nan -2.6905008503079513e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.5064437782336239e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.4212466991689733e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.3081805796364874e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465907e-15 nan 1.413800215837018e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.3783362439186225e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.4100245325418508e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465514e-15 nan 1.4378445859576427e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465514e-15 nan 1.289099332659762e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.3902945769121303e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465514e-15 nan 1.329123476663124e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.441548767289947e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.4424111760783637e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.4387096273475999e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465514e-15 nan 1.3422247969797814e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.4377443441511634e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465514e-15 nan 1.4227945102068245e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.4442531541976505e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465514e-15 nan 1.3878961055385493e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.376508883933213e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.4885809558339369e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.4206945984958645e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.2878076492814049e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.4981188902565703e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.7712115608152489e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465514e-15 nan 1.4023986995345525e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.4039922933807915e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.4794594821909206e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.8633714022828853e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.3366398281118015e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero grid 4.928039650465482e-15 nan 1.3616871102368503e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.9390448899913555e-15 nan 1.5064437782336239e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 5.2149676331643026e-15 nan 1.4212466991689733e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.9874235151640226e-15 nan 1.3081805796364874e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.901890413969814e-15 nan 1.413800215837018e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.912640678595362e-15 nan 1.3783362439186225e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 5.0096090898733436e-15 nan 1.4100245325418508e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.873772611037366e-15 nan 1.4378445859576427e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.984669618621239e-15 nan 1.289099332659762e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 5.05245920916422e-15 nan 1.3902945769121303e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.834457531364068e-15 nan 1.329123476663124e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 5.0010271963145346e-15 nan 1.441548767289947e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.930323693446811e-15 nan 1.4424111760783637e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.826805820669132e-15 nan 1.4387096273475999e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.667229795396541e-15 nan 1.3422247969797814e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.90896669564814e-15 nan 1.4377443441511634e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.895747441577864e-15 nan 1.4227945102068245e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 5.115501846954768e-15 nan 1.4442531541976505e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.819998123768503e-15 nan 1.3878961055385493e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 5.121553279172979e-15 nan 1.376508883933213e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.7918188395828575e-15 nan 1.4885809558339369e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.934228971699566e-15 nan 1.4206945984958645e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.770988348466876e-15 nan 1.2878076492814049e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.894569894203611e-15 nan 1.4981188902565703e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 5.209170678670083e-15 nan 1.7712115608152489e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.7981087792553764e-15 nan 1.4023986995345525e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.969807782815842e-15 nan 1.4039922933807915e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.8783615055812465e-15 nan 1.4794594821909206e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 5.622976124893403e-15 nan 1.8633714022828853e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 4.908732440511977e-15 nan 1.3366398281118015e-15 nan True ""
+"100 h" 100.0 33482.076912231816 1e-20 on 0 sampler-zero sampler zero samples 5.024530471561497e-15 nan 1.3616871102368503e-15 nan True ""

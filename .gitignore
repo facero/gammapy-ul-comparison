@@ -1,0 +1,6 @@
+*.swp
+.ipynb_checkpoints/
+__pycache__/
+*.log
+.DS_Store
+previous_run_fixed_scan/
