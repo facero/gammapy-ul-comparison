@@ -2,10 +2,16 @@
 
 Runs (or reloads from ``report_results/``):
 
-1. main: background-only realizations for 3 exposures, the 4 default cases,
-   Bayesian ULs from both nested sampling ("samples") and exact grid integration ("grid"),
+1. main: background-only realizations for 3 exposures, the 4 default cases
+   (profile UL by direct minimisation + root finding, "exact"; Bayesian UL by
+   exact grid integration of the posterior, "grid"),
 2. coverage: same with an injected signal of 1 and 3 sigma_A,
-3. sampler noise: the same faked dataset analysed N times by the sampler.
+3. sampler noise: the same faked dataset analysed N times by the nested sampler,
+   compared with the exact grid quantile.
+
+Constrained cases: amplitude >= 0. Unconstrained cases: amplitude >= -1e-11
+(the upper bound mirrored), i.e. -22 sigma_A at 0.03 h and -3000 sigma_A at 100 h,
+the same bound for the profile and the Bayesian prior.
 
 and makes the figures of ``UL_report.md`` in ``report_figures/``.
 
@@ -45,18 +51,24 @@ from ul_simulation import default_cases, load_results, run_simulation, save_resu
 E1, E2 = 0.05 * u.TeV, 50 * u.TeV
 fpe_config = {"n_sigma_ul": 1.645, "n_sigma_sensitivity": 2}
 DELTA_TS = fpe_config["n_sigma_ul"] ** 2
-CL_SAMPLES = 0.954
-REF_AMPLITUDE = 1e-13  # amplitude of the fit model = reference of the FluxPointsEstimator norm
+CL_SAMPLES = 0.95  # one-sided 95 %, as the profile Delta = 1.645**2
+AMPLITUDE_MAX = 1e-11
+AMPLITUDE_NEGATIVE_MIN = -1e-11  # "unconstrained": same bound for profile and prior
+N_JOBS = 8  # leave some cores free
 
 exposures = ["0.03 h", "0.3 h", "100 h"]
-n_runs = 100
-coverage_exposures = ["0.3 h", "100 h"]
+n_runs = 1000
+coverage_exposures = ["0.03 h", "0.3 h", "100 h"]
 coverage_levels = [1.0, 3.0]  # injected amplitude in units of sigma_A
+n_runs_coverage = 1000
+noise_exposures = ["0.3 h", "100 h"]
 n_repeat = 30  # sampler noise test: number of sampler runs on the same dataset
 
-cases = default_cases(profile_ul_methods=("scipy",), sampler_ul_methods=("samples", "grid"),
-                      confidence_level_samples=CL_SAMPLES)
-CASE_BOUNDS = {c.name: (c.norm_min * REF_AMPLITUDE if c.method == "profile" else c.amplitude_min) for c in cases}
+case_options = dict(confidence_level_samples=CL_SAMPLES, amplitude_negative_min=AMPLITUDE_NEGATIVE_MIN,
+                    amplitude_max=AMPLITUDE_MAX)
+cases = default_cases(profile_ul_methods=("exact",), sampler_ul_methods=("grid",), **case_options)
+noise_cases = [c for c in default_cases(sampler_ul_methods=("samples", "grid"), **case_options) if c.method == "sampler"]
+CASE_BOUNDS = {c.name: c.amplitude_min for c in cases}
 
 results_dir = Path("report_results")
 figures_dir = Path("report_figures")
@@ -66,9 +78,9 @@ STYLE = {
     "profile-zero": dict(color="tab:orange", marker="v", label="profile, amplitude $\\geq 0$"),
     "profile-negative": dict(color="tab:red", marker="^", label="profile, unconstrained"),
     "sampler-zero": dict(color="tab:blue", marker="o", label="Bayes, uniform prior $\\geq 0$"),
-    "sampler-negative": dict(color="tab:cyan", marker="s", label="Bayes, uniform prior $\\geq -3\\times10^{-14}$"),
+    "sampler-negative": dict(color="tab:cyan", marker="s", label="Bayes, uniform prior, unconstrained"),
 }
-UL_METHOD = {"profile-zero": "scipy", "profile-negative": "scipy", "sampler-zero": "grid", "sampler-negative": "grid"}
+UL_METHOD = {"profile-zero": "exact", "profile-negative": "exact", "sampler-zero": "grid", "sampler-negative": "grid"}
 
 
 # ---------------------------------------------------------------------------
@@ -119,7 +131,7 @@ def sigma_asimov(table):
     """sigma_A per exposure from the Asimov constrained profile UL."""
     out = {}
     for exposure in np.unique(table["exposure"]):
-        ul = select(table, exposure=exposure, dataset_type="asimov", case="profile-zero", ul_method="scipy")["ul"]
+        ul = select(table, exposure=exposure, dataset_type="asimov", case="profile-zero", ul_method=UL_METHOD["profile-zero"])["ul"]
         out[str(exposure)] = float(ul.to_value("cm-2 s-1 TeV-1")[0]) / np.sqrt(DELTA_TS)
     return out
 
@@ -128,16 +140,17 @@ def run_all():
     results_dir.mkdir(exist_ok=True)
     main = run_or_load(
         "uls_main.ecsv",
-        lambda: run_simulation(exposures, cases, n_runs, fpe_config, E1, E2, dataset_types=("on", "asimov")),
+        lambda: run_simulation(exposures, cases, n_runs, fpe_config, E1, E2, dataset_types=("on", "asimov"), n_jobs=N_JOBS),
     )
     sig = sigma_asimov(main)
 
     def coverage_run():
         tables = []
-        for level in coverage_levels:
+        for i, level in enumerate(coverage_levels):
             amp = {e: level * sig[e] for e in coverage_exposures}
-            t = run_simulation(coverage_exposures, cases, n_runs, fpe_config, E1, E2, dataset_types=("on",),
-                               simu_amplitude=amp, seed=1000)  # seeds different from the main run
+            # independent seeds: 10000.. for the first level, 20000.. for the second (main run: 0..n_runs-1)
+            t = run_simulation(coverage_exposures, cases, n_runs_coverage, fpe_config, E1, E2, dataset_types=("on",),
+                               simu_amplitude=amp, seed=10000 * (i + 1), n_jobs=N_JOBS)
             t["level"] = level
             tables.append(t)
         table = vstack(tables, metadata_conflicts="silent")
@@ -145,11 +158,10 @@ def run_all():
 
     coverage = run_or_load("uls_coverage.ecsv", coverage_run)
 
-    sampler_cases = [c for c in cases if c.method == "sampler"]
     noise = run_or_load(
         "uls_sampler_noise.ecsv",
-        lambda: run_simulation(coverage_exposures, sampler_cases, n_repeat, fpe_config, E1, E2,
-                               dataset_types=("on",), seed=[0] * n_repeat),
+        lambda: run_simulation(noise_exposures, noise_cases, n_repeat, fpe_config, E1, E2,
+                               dataset_types=("on",), seed=[0] * n_repeat, n_jobs=N_JOBS),
     )
     return main, coverage, noise, sig
 
@@ -182,12 +194,11 @@ def fig_ul_vs_bestfit(main, sig, summary):
             st = STYLE[case]
             ax.scatter(z, ul, s=12, alpha=0.6, color=st["color"], marker=st["marker"], label=st["label"])
             ax.plot(zz, theory_ul(case, zz, CASE_BOUNDS[case] / s), color=st["color"], lw=1.5)
-        ax.axvline(CASE_BOUNDS["profile-negative"] / s, color="grey", ls=":", lw=1)
         ax.set_title(bkg_label(main, exposure))
         ax.set_xlabel(r"best-fit amplitude (profile, unconstr.) / $\sigma_A$")
         ax.set_xlim(zz[0], zz[-1])
     axes[0].set_ylabel(r"UL / $\sigma_A$")
-    axes[0].set_ylim(0, 6)
+    axes[0].set_ylim(-2.5, 6.5)
     axes[0].legend(fontsize=9, loc="upper left")
     fig.tight_layout()
     fig.savefig(figures_dir / "fig1_ul_vs_bestfit.png", dpi=150)
@@ -208,7 +219,8 @@ def fig_paired(main, sig, summary):
             ax.scatter(x, y, s=12, alpha=0.6, color=st["color"], marker=st["marker"], label=f"prior {prior}")
             ax.plot(theory_ul(cp, zz, CASE_BOUNDS[cp] / s), theory_ul(cs, zz, CASE_BOUNDS[cs] / s),
                     color=st["color"], lw=1.5)
-        lim = [0, max(4.5, np.nanmax(get(main, exposure, "sampler-zero") / s) * 1.05)]
+        lo = min(0, np.nanmin(get(main, exposure, "profile-negative") / s)) - 0.2
+        lim = [lo, max(4.5, np.nanmax(get(main, exposure, "sampler-zero") / s) * 1.05)]
         ax.plot(lim, lim, color="k", lw=0.8, ls="--", label="1:1")
         ax.set_xlim(lim)
         ax.set_ylim(lim)
@@ -234,7 +246,7 @@ def fig_ecdf(main, sig, summary, n_mc=200000):
             ax.step(ul, np.arange(1, len(ul) + 1) / len(ul), where="post", color=st["color"], label=st["label"])
             th = np.sort(theory_ul(case, zmc, CASE_BOUNDS[case] / s))
             ax.plot(th, np.arange(1, n_mc + 1) / n_mc, color=st["color"], ls="--", lw=1)
-        ax.set_xlim(0, 5)
+        ax.set_xlim(-2.5, 6)
         ax.set_title(bkg_label(main, exposure))
         ax.set_xlabel(r"UL / $\sigma_A$")
     axes[0].set_ylabel("cumulative fraction of realizations")
@@ -251,10 +263,11 @@ def fig_vs_bkg(main, sig, summary):
     for prior, (cp, cs) in {"zero": ("profile-zero", "sampler-zero"),
                             "negative": ("profile-negative", "sampler-negative")}.items():
         st = STYLE[cs]
-        med = [np.nanmedian(get(main, e, cs) / get(main, e, cp)) for e in exposures]
+        # ratio of the medians: the per-realization ratio is ill-defined when the unconstrained profile UL is ~0
+        med = [np.nanmedian(get(main, e, cs)) / np.nanmedian(get(main, e, cp)) for e in exposures]
         asi = [get(main, e, cs, dataset_type="asimov")[0] / get(main, e, cp, dataset_type="asimov")[0] for e in exposures]
         th = [theory_ul(cs, 0.0, CASE_BOUNDS[cs] / sig[e]) / theory_ul(cp, 0.0, CASE_BOUNDS[cp] / sig[e]) for e in exposures]
-        ax1.plot(bkg, med, marker="o", color=st["color"], label=f"prior {prior}: median of per-realization ratio")
+        ax1.plot(bkg, med, marker="o", color=st["color"], label=f"prior {prior}: ratio of the median ULs")
         ax1.plot(bkg, asi, marker="*", ms=10, ls=":", color=st["color"], label=f"prior {prior}: Asimov")
         ax1.plot(bkg, th, ls="--", color=st["color"], lw=1, label=f"prior {prior}: Gaussian expectation (Asimov)")
         for case, ls in [(cp, "-"), (cs, "--")]:
@@ -315,9 +328,9 @@ def fig_coverage(main, coverage, sig, summary):
 
 def fig_sampler_noise(noise, summary):
     """Same dataset analysed n_repeat times: nested sampling UL scatter around the exact (grid) UL."""
-    fig, axes = plt.subplots(1, len(coverage_exposures), figsize=(6 * len(coverage_exposures), 4), sharey=True)
+    fig, axes = plt.subplots(1, len(noise_exposures), figsize=(6 * len(noise_exposures), 4), sharey=True)
     summary["sampler_noise"] = {}
-    for ax, exposure in zip(axes, coverage_exposures):
+    for ax, exposure in zip(axes, noise_exposures):
         summary["sampler_noise"][exposure] = {}
         for case in ("sampler-zero", "sampler-negative"):
             samp = get(noise, exposure, case, ul_method="samples", sort=None)
@@ -354,17 +367,13 @@ def numbers(main, sig, summary):
                 theory_median_over_sigma=float(np.median(theory_ul(case, np.random.default_rng(3).normal(0, 1, 200000), CASE_BOUNDS[case] / s))),
                 bound_over_sigma=float(CASE_BOUNDS[case] / s),
                 n_nan=int(np.isnan(ul).sum()),
-                n_scan_extended=int(np.char.startswith(np.asarray(select(main, exposure=exposure, case=case, ul_method=UL_METHOD[case], dataset_type="on")["message"], str), "norm scan extended").sum()),
+                frac_negative=float(np.nanmean(ul < 0)),
             )
-        for cs in ("sampler-zero", "sampler-negative"):
-            samp = get(main, exposure, cs, ul_method="samples")
-            grid = get(main, exposure, cs, ul_method="grid")
-            d[cs]["samples_vs_grid_median_rel"] = float(np.nanmedian(samp / grid - 1))
-            d[cs]["samples_vs_grid_std_rel"] = float(np.nanstd(samp / grid - 1))
         for prior, (cp, cs) in {"zero": ("profile-zero", "sampler-zero"), "negative": ("profile-negative", "sampler-negative")}.items():
             r = get(main, exposure, cs) / get(main, exposure, cp)
-            d[f"ratio_{prior}"] = dict(median=float(np.nanmedian(r)), min=float(np.nanmin(r)), max=float(np.nanmax(r)),
-                                       frac_bayes_larger=float(np.nanmean(r > 1)))
+            d[f"ratio_{prior}"] = dict(ratio_of_medians=float(np.nanmedian(get(main, exposure, cs)) / np.nanmedian(get(main, exposure, cp))),
+                                       median=float(np.nanmedian(r)), min=float(np.nanmin(r)), max=float(np.nanmax(r)),
+                                       frac_bayes_larger=float(np.nanmean(get(main, exposure, cs) > get(main, exposure, cp))))
         d["constr_over_unconstr"] = {
             m: float(np.nanmedian(get(main, exposure, f"{m}-zero")) / np.nanmedian(get(main, exposure, f"{m}-negative")))
             for m in ("profile", "sampler")

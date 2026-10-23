@@ -4,3 +4,4 @@ __pycache__/
 *.log
 .DS_Store
 previous_run_fixed_scan/
+archive_v1/

@@ -11,20 +11,20 @@ the lower bound of each case). So the quantile of the UL at Phi(N) is simply
 UL(z = N), for N = -2, -1, 0, 1, 2.
 
 Two exposures: 0.03 h (~10 background counts, Poisson regime) and 100 h
-(~33 500 counts, Gaussian regime). The Bayesian ULs use the exact "grid"
-posterior quantile (no nested sampling noise, see Fig. 6 of the report).
+(~33 500 counts, Gaussian regime). The simulated ULs are those of the main run
+of ``ul_report.py`` (``report_results/uls_main.ecsv``, 1000 realizations per
+exposure, run it first). Also computed: "shifted Asimov" bands, the ULs on
+Asimov datasets with an injected amplitude N sigma_A.
 
 Run with::
 
     python brazil_bands.py
 
-Outputs: ``report_results/uls_brazil.ecsv``, ``report_results/brazil_summary.json``,
-``report_figures/fig7_brazil_bands.png``.
+Outputs: ``report_results/brazil_summary.json``, ``report_figures/fig7_brazil_bands.png``.
 """
 
 import argparse
 import json
-import time
 from pathlib import Path
 
 import numpy as np
@@ -36,30 +36,23 @@ from scipy.stats import norm as gauss
 
 from ul_comparison_main import set_style
 from ul_report import (
-    CASE_BOUNDS, CL_SAMPLES, E1, E2, STYLE, UL_METHOD, fpe_config, figures_dir, get, results_dir, sigma_asimov, theory_ul,
+    CASE_BOUNDS, E1, E2, STYLE, UL_METHOD, cases, fpe_config, figures_dir, get, results_dir, sigma_asimov, theory_ul,
 )
-from ul_simulation import (
-    asimov_dataset, build_simulation, default_cases, load_results, run_case, run_simulation, save_results,
-)
+from ul_simulation import asimov_dataset, build_simulation, load_results, run_case
 
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
 
 exposures = ["0.03 h", "100 h"]
-n_runs = 1000  # +-2 sigma quantiles (2.3 %) need ~1000 realizations
-seed = 2000  # seeds 2000..2999, independent of the report runs
-recompute = False  # False: reload report_results/uls_brazil.ecsv when it exists
 n_boot = 2000  # bootstrap resamples for the uncertainty of the observed quantiles
 
-cases = default_cases(profile_ul_methods=("scipy",), sampler_ul_methods=("grid",),
-                      confidence_level_samples=CL_SAMPLES)
 case_names = [c.name for c in cases]
 
 N_SIGMA = np.array([-2, -1, 0, 1, 2])
 QUANTILES = gauss.cdf(N_SIGMA)  # 0.023, 0.159, 0.5, 0.841, 0.977
 
-results_file = results_dir / "uls_brazil.ecsv"
+results_file = results_dir / "uls_main.ecsv"
 summary_file = results_dir / "brazil_summary.json"
 figure_file = figures_dir / "fig7_brazil_bands.png"
 
@@ -68,16 +61,11 @@ figure_file = figures_dir / "fig7_brazil_bands.png"
 # Simulations
 # ---------------------------------------------------------------------------
 
-def run_or_load():
-    if results_file.exists() and not recompute:
-        print(f"Loading {results_file}")
-        return load_results(results_file)
-    results_file.parent.mkdir(exist_ok=True)
-    t0 = time.time()
-    table = run_simulation(exposures, cases, n_runs, fpe_config, E1, E2, dataset_types=("on", "asimov"), seed=seed)
-    print(f"Brazil run: {time.time() - t0:.0f} s")
-    save_results(table, results_file)
-    return table
+def load_main():
+    if not results_file.exists():
+        raise FileNotFoundError(f"{results_file} not found: run ul_report.py first")
+    print(f"Loading {results_file}")
+    return load_results(results_file)
 
 
 # ---------------------------------------------------------------------------
@@ -168,7 +156,7 @@ SHORT_LABEL = {
     "profile-zero": "profile\namplitude $\\geq 0$",
     "profile-negative": "profile\nunconstrained",
     "sampler-zero": "Bayes\nprior $\\geq 0$",
-    "sampler-negative": "Bayes\nprior $\\geq -3\\times10^{-14}$",
+    "sampler-negative": "Bayes\nunconstrained",
 }
 
 
@@ -210,7 +198,9 @@ def fig_brazil(bands, table):
                      f"{bands[exposure][case_names[0]]['n']} realizations")
         ax.grid(axis="y", alpha=0.3)
     ax0 = np.atleast_1d(axes)[0]
-    ax0.set_ylim(-0.6, ytop)
+    ybot = -0.3 + min(-0.3, min(min(np.min(b["expected"]), np.min(np.subtract(b["observed"], b["observed_err"])),
+                                    np.min(b["shifted_asimov"])) for e in exposures for c, b in bands[e].items() if c in case_names))
+    ax0.set_ylim(ybot, ytop)
     ax0.set_ylabel(r"UL / $\sigma_A$")
     handles = [
         Patch(color="#2ca02c", label="expected $\\pm1\\sigma$ (Gaussian limit)"),
@@ -250,20 +240,18 @@ def print_table(bands):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--n-runs", type=int, default=n_runs)
+    parser.add_argument("--results", type=Path, default=results_file, help="simulated ULs (ECSV from ul_report.py)")
     parser.add_argument("--out-dir", type=Path, default=None,
-                        help="write results and figure here instead of report_results/ and report_figures/ (tests)")
-    parser.add_argument("--recompute", action="store_true")
+                        help="write the summary and figure here instead of report_results/ and report_figures/ (tests)")
     args = parser.parse_args()
-    n_runs, recompute = args.n_runs, args.recompute or recompute
+    results_file = args.results
     if args.out_dir is not None:
         args.out_dir.mkdir(parents=True, exist_ok=True)
-        results_file = args.out_dir / "uls_brazil.ecsv"
         summary_file = args.out_dir / "brazil_summary.json"
         figure_file = args.out_dir / "fig7_brazil_bands.png"
     set_style()
     figures_dir.mkdir(exist_ok=True)
-    table = run_or_load()
+    table = load_main()
     sig = sigma_asimov(table)
     import warnings
     import logging

@@ -66,11 +66,12 @@ __all__ = [
     "DATASET_TYPES",
 ]
 
-PROFILE_UL_METHODS = ("scipy", "fpe", "interp")
+PROFILE_UL_METHODS = ("scipy", "fpe", "interp", "exact")
 SAMPLER_UL_METHODS = ("samples", "grid")
 DATASET_TYPES = ("on", "onoff", "asimov")
 UL_UNIT = u.Unit("cm-2 s-1 TeV-1")
 EXTRA_COLUMNS = ("sensitivity", "best_fit", "ts")
+REF_AMPLITUDE = 1e-13  # amplitude of the fit model, reference of the FluxPointsEstimator norm
 ASIMOV_SEED = -1  # seed value recorded for the (single, noiseless) Asimov realization
 
 _THREAD_ENV_VARS = (
@@ -128,7 +129,11 @@ class Case:
 
         - "scipy": `stat_profile_ul_scipy` on the stat scan (default),
         - "fpe": ``norm_ul`` computed by the `FluxPointsEstimator`,
-        - "interp": ``interp1d`` of the stat scan on a fine grid (notebook method).
+        - "interp": ``interp1d`` of the stat scan on a fine grid (notebook method),
+        - "exact": direct minimisation of the likelihood within the amplitude
+          bounds and root finding of stat - stat_min = delta_ts, without the
+          `FluxPointsEstimator` scan (only amplitude free). Use it for wide
+          bounds, where a fixed norm scan would be too coarse.
     sampler_ul_methods : tuple of str
         Bayesian UL methods to compute (sampler only), among:
 
@@ -220,8 +225,11 @@ def default_cases(
     passed to every `Case`.
     """
     zero = dict(prior="zero", amplitude_min=0.0, amplitude_max=amplitude_max, **Case.norm_scan_zero)
+    # same lower bound for the profile (FluxPointsEstimator norm, reference amplitude 1e-13) and the sampler
+    norm_negative = dict(Case.norm_scan_negative)
+    norm_negative["norm_min"] = norm_negative["norm_scan_min"] = amplitude_negative_min / REF_AMPLITUDE
     negative = dict(
-        prior="negative", amplitude_min=amplitude_negative_min, amplitude_max=amplitude_max, **Case.norm_scan_negative
+        prior="negative", amplitude_min=amplitude_negative_min, amplitude_max=amplitude_max, **norm_negative
     )
     return [
         Case("profile-zero", "profile", profile_ul_methods=profile_ul_methods, **zero, **kwargs),
@@ -303,7 +311,7 @@ def build_simulation(exposure, E1, E2, simu_amplitude=1e-20):
 
     # no signal
     skymodel_simu = build_model_pow(amplitude=simu_amplitude)  # default: almost no signal for simu
-    skymodel_fit = build_model_pow(amplitude=1e-13)  # reasonable starting point for fitting UL
+    skymodel_fit = build_model_pow(amplitude=REF_AMPLITUDE)  # reasonable starting point for fitting UL
     skymodel_fit.spectral_model.index.frozen = True
     skymodel_simu.spectral_model.index.frozen = True
 
@@ -393,6 +401,43 @@ def _scan_reaches(res, delta_ts):
     return bool(np.nanmax(stat[i_min:]) - stat[i_min] >= delta_ts)
 
 
+def _coarse_grid(a, b, n_coarse=200):
+    """Symmetric log-spaced grid on [a, b] (b > 0), dense around 0, used to bracket the likelihood minimum."""
+    tiny = 1e-6 * min(abs(b), abs(a) if a != 0 else abs(b))
+    coarse = np.geomspace(tiny, b, n_coarse)
+    if a < 0:
+        return np.concatenate([-np.geomspace(-a, tiny, n_coarse // 2), [0.0], coarse])
+    return np.concatenate([[a], coarse[coarse > a]])
+
+
+def _profile_ul_exact(dataset, amplitude, a, b, delta_ts):
+    """Profile UL by direct minimisation in [a, b] and root finding. Returns (ul, best_fit, ts).
+
+    Only valid if ``amplitude`` is the only free parameter. ``ts`` is stat(0) - stat_min.
+    """
+    from scipy.optimize import brentq, minimize_scalar
+
+    def stat(x):
+        amplitude.value = x
+        value = dataset.stat_sum()
+        return value if np.isfinite(value) else np.inf
+
+    coarse = _coarse_grid(a, b)
+    s = np.array([stat(x) for x in coarse])
+    i = int(np.argmin(s))
+    if not np.isfinite(s[i]):
+        raise RuntimeError("No finite fit statistic within the bounds.")
+    lo, hi = coarse[max(i - 1, 0)], coarse[min(i + 1, len(coarse) - 1)]
+    res = minimize_scalar(stat, bounds=(lo, hi), method="bounded", options=dict(xatol=1e-4 * (hi - lo)))
+    x_min, s_min = (res.x, res.fun) if res.fun < s[i] else (coarse[i], s[i])
+    above = np.nonzero((s - s_min > delta_ts) & (coarse > x_min))[0]
+    if len(above) == 0:
+        raise RuntimeError("Stat profile does not reach delta_ts within the bounds.")
+    x_hi = coarse[above[0]]
+    ul = brentq(lambda x: stat(x) - s_min - delta_ts, x_min, x_hi, xtol=1e-6 * (x_hi - x_min))
+    return ul, x_min, stat(0.0) - s_min
+
+
 def _run_profile(case, dataset, fit_model, fpe_config, E1, E2):
     """Profile likelihood ULs. Returns {ul_method: (ul, success, message)}, extra."""
     from gammapy.estimators import FluxPointsEstimator
@@ -405,6 +450,21 @@ def _run_profile(case, dataset, fit_model, fpe_config, E1, E2):
     amplitude.scan_min = case.amplitude_min
     amplitude.scan_max = case.amplitude_max
     dataset.models = model
+    delta_ts = fpe_config.get("n_sigma_ul", 2) ** 2
+
+    uls, extra = {}, {}
+    if "exact" in case.profile_ul_methods:
+        try:
+            if len(dataset.models.parameters.free_unique_parameters) != 1:
+                raise RuntimeError("exact method requires amplitude to be the only free parameter")
+            ul, best_fit, ts = _profile_ul_exact(dataset, amplitude, case.amplitude_min, case.amplitude_max, delta_ts)
+            uls["exact"] = (float(ul), bool(np.isfinite(ul)), "")
+            extra = {"best_fit": float(best_fit), "ts": float(ts)}
+        except Exception as exc:
+            uls["exact"] = (np.nan, False, f"{type(exc).__name__}: {exc}")
+    if set(case.profile_ul_methods) == {"exact"}:
+        return uls, extra
+    amplitude.value = REF_AMPLITUDE
 
     config = dict(fpe_config)
     config["n_jobs"] = 1  # no nested multiprocessing
@@ -416,7 +476,6 @@ def _run_profile(case, dataset, fit_model, fpe_config, E1, E2):
         if "fpe" in case.profile_ul_methods:
             selection.append("ul")
         config["selection_optional"] = selection
-    delta_ts = config.get("n_sigma_ul", 2) ** 2
 
     refamp = amplitude.quantity.to_value(UL_UNIT)
     uses_scan = bool({"scipy", "interp"} & set(case.profile_ul_methods))
@@ -437,20 +496,20 @@ def _run_profile(case, dataset, fit_model, fpe_config, E1, E2):
     scan_note = f"norm scan extended to {scan_max:g}" if scan_max != case.norm_scan_max else ""
 
     refamp = res.reference_spectral_model.amplitude.quantity.to_value(UL_UNIT)
-    extra = {}
     for key, column, scale in [("sensitivity", "norm_sensitivity", refamp), ("best_fit", "norm", refamp), ("ts", "ts", 1)]:
         try:
-            extra[key] = float(res[column].data.flatten()[0]) * scale
+            extra.setdefault(key, float(res[column].data.flatten()[0]) * scale)
         except Exception:
-            extra[key] = np.nan
+            extra.setdefault(key, np.nan)
 
-    uls = {}
     if {"scipy", "interp"} & set(case.profile_ul_methods):
         norm_values = res.stat_scan.geom.axes["norm"].center
         stat = res.stat_scan.data.flatten()
         dstat = stat - np.nanmin(stat)
 
     for method in case.profile_ul_methods:
+        if method == "exact":
+            continue
         try:
             if method == "scipy":
                 ul = stat_profile_ul_scipy(norm_values, dstat, delta_ts=delta_ts) * refamp
@@ -480,12 +539,7 @@ def _bayes_ul_grid(dataset, amplitude, a, b, confidence_level, n_coarse=200, n_f
         value = dataset.stat_sum_likelihood()
         return value if np.isfinite(value) else np.inf
 
-    tiny = 1e-6 * min(abs(b), abs(a) if a != 0 else abs(b))
-    coarse = np.geomspace(tiny, b, n_coarse)
-    if a < 0:
-        coarse = np.concatenate([-np.geomspace(-a, tiny, n_coarse // 2), [0.0], coarse])
-    else:
-        coarse = np.concatenate([[a], coarse[coarse > a]])
+    coarse = _coarse_grid(a, b, n_coarse)
     s = np.array([stat(x) for x in coarse])
     i_min = int(np.argmin(s))
     if not np.isfinite(s[i_min]):
