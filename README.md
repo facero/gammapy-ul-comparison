@@ -16,7 +16,7 @@ The full write-up is [`UL_report.md`](UL_report.md) ([PDF](UL_report.pdf)).
 | `ul_comparison_main.py` | Refactored version of the original notebook: paper figures |
 | `ul_report.py` | Simulations and figures 1–6 of the report (spread, Bayes/profile ratio, coverage, sampler noise) |
 | `brazil_bands.py` | Section 5.6 of the report: Brazil bands at zero signal (Gaussian Asimov, shifted Asimov, toys of the main run) |
-| `plot_triangle.py` | ULs per realization with side histograms (`plot_lc_triangle` of the notebook), 3 exposures × with/without constraint |
+| `plot_triangle.py` | ULs per realization with side histograms (`plot_lc_triangle` of the notebook), 0.03 h and 100 h × with/without constraint |
 | `UL-simulation-paper-script.ipynb` | Original notebook |
 | `report_results/` | Raw results (ECSV, one row per realization × case × UL method) and JSON summaries |
 | `report_figures/` | Figures of the report |

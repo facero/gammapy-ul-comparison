@@ -1,6 +1,6 @@
 """ULs per realization with side histograms, as ``plot_lc_triangle`` of the original notebook.
 
-One panel per exposure (rows) and constraint (columns: amplitude >= 0, unconstrained),
+One panel per exposure (rows: 0.03 h and 100 h) and constraint (columns: amplitude >= 0, unconstrained),
 profile likelihood vs Bayesian ULs on the same realizations. Reads the main run of
 ``ul_report.py`` (``report_results/uls_main.ecsv``), so run that first.
 
@@ -10,7 +10,7 @@ Run with::
     python plot_triangle.py --n-show 100   # scatter of the first 100 realizations only (histograms use all)
 
 Outputs: ``report_figures/fig8_ul_per_realization.png`` (grid) and one PDF per
-exposure and constraint in ``report_figures/triangle/``, named as in the notebook
+exposure and constraint (4 in total) in ``report_figures/triangle/``, named as in the notebook
 (``UL_comparison_exp_<exposure>_prior_<zero|negative>.pdf``).
 """
 
@@ -26,9 +26,10 @@ from matplotlib.ticker import MaxNLocator
 from scipy.stats import median_abs_deviation as mad
 
 from ul_comparison_main import set_style
-from ul_report import exposures, figures_dir, get, results_dir
+from ul_report import figures_dir, get, results_dir
 from ul_simulation import load_results
 
+exposures = ["0.03 h", "100 h"]  # Poisson and Gaussian regimes (0.3 h skipped)
 PRIORS = {"zero": "amplitude $\\geq 0$", "negative": "unconstrained"}
 COLORS = {"profile": "tab:orange", "sampler": "tab:blue"}
 MARKERS = {"profile": "v", "sampler": "o"}
