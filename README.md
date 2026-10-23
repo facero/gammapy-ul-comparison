@@ -16,6 +16,7 @@ The full write-up is [`UL_report.md`](UL_report.md) ([PDF](UL_report.pdf)).
 | `ul_comparison_main.py` | Refactored version of the original notebook: paper figures |
 | `ul_report.py` | Simulations and figures 1–6 of the report (spread, Bayes/profile ratio, coverage, sampler noise) |
 | `brazil_bands.py` | Section 5.6 of the report: Brazil bands at zero signal (Gaussian Asimov, shifted Asimov, toys of the main run) |
+| `plot_triangle.py` | ULs per realization with side histograms (`plot_lc_triangle` of the notebook), 3 exposures × with/without constraint |
 | `UL-simulation-paper-script.ipynb` | Original notebook |
 | `report_results/` | Raw results (ECSV, one row per realization × case × UL method) and JSON summaries |
 | `report_figures/` | Figures of the report |
@@ -28,6 +29,7 @@ Requires gammapy (dev), UltraNest, scipy, matplotlib, tqdm and `GAMMAPY_DATA`
 ```
 python ul_report.py      # reloads report_results/*.ecsv if present, otherwise reruns them (~45 min on 8 cores)
 python brazil_bands.py   # Brazil bands from report_results/uls_main.ecsv (~1 min)
+python plot_triangle.py  # per-realization figure: report_figures/fig8_ul_per_realization.png + report_figures/triangle/*.pdf
 ```
 
 Realizations are distributed over `N_JOBS` processes (`ul_report.py`, `n_jobs` in `run_simulation`).
